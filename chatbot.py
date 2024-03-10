@@ -5,18 +5,19 @@ from ChatGPT_HKBU import HKBU_ChatGPT
 import os
 import redis
 import logging
+import requests
 
 global redis1
 def main():
 	updater = Updater(token=(os.environ['ACCESS_TOKEN']), use_context=True)
 	dispatcher = updater.dispatcher
 	global redis1
-	redis1 = redis.Redis(host=(config['REDIS']['HOST']),password=(config['REDIS']['PASSWORD']),port=(config['REDIS']['REDISPORT']))
-
+	redis1 = redis.Redis(host='redis-18275.c1.asia-northeast1-1.gce.cloud.redislabs.com', password='Ctt97jTCOiHCYk1tA6qQTddFNfNxTKtO', port='18725')
+	
 	logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',level=logging.INFO)
 
 	global chatgpt
-	chatgpt = HKBU_ChatGPT(config)
+	chatgpt = HKBU_ChatGPT()
 	chatgpt_handler = MessageHandler(Filters.text & (~Filters.command), equiped_chatgpt)
 	dispatcher.add_handler(chatgpt_handler)
 
