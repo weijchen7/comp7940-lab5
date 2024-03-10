@@ -1,3 +1,4 @@
+pip3 install telegram
 from telegram import Update
 from telegram.ext import (Updater, MessageHandler, Filters, CommandHandler, CallbackContext)
 from ChatGPT_HKBU import HKBU_ChatGPT
