@@ -2,15 +2,13 @@ from telegram import Update
 from telegram.ext import (Updater, MessageHandler, Filters, CommandHandler, CallbackContext)
 from ChatGPT_HKBU import HKBU_ChatGPT
 
+import os
 import redis
-import configparser
 import logging
 
 global redis1
 def main():
-	config = configparser.ConfigParser()
-	config.read('config.ini')
-	updater = Updater(token=(config['TELEGRAM']['ACCESS_TOKEN']), use_context=True)
+	updater = Updater(token=(os.environ['ACCESS_TOKEN']), use_context=True)
 	dispatcher = updater.dispatcher
 	global redis1
 	redis1 = redis.Redis(host=(config['REDIS']['HOST']),password=(config['REDIS']['PASSWORD']),port=(config['REDIS']['REDISPORT']))
@@ -24,6 +22,7 @@ def main():
 
 	dispatcher.add_handler(CommandHandler("add", add))
 	dispatcher.add_handler(CommandHandler("help", help_command))
+	dispatcher.add_handler(CommandHandler("hello", hello))	
 
 	updater.start_polling()
 	updater.idle()
@@ -48,6 +47,18 @@ def add(update:Update, context:CallbackContext) -> None:
 
 	except (IndexError, ValueError):
 		update.message.reply_text('Usage: /add <keyword>')
+
+def hello(update:Update, context:CallbackContext) -> None:
+        try:
+                global redis1
+                logging.info(context.args[0])
+                name = context.args[0]
+                redis1.incr(name)
+
+                update.message.reply_text('Good day,  ' + name + ' !')
+
+        except (IndexError, ValueError):
+                update.message.reply_text('Usage: /add <keyword>')
 
 def equiped_chatgpt(update, context):
 	global chatgpt
